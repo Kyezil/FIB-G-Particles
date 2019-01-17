@@ -77,19 +77,21 @@ bool Particles::paintGL()
     // fill buffer with random points on a sphere
     QRandomGenerator rnd(1234);
     GLfloat points[NUM_PARTICLES][3];
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < NUM_PARTICLES; ++i) {
         double theta = 2 * M_PI * rnd.generateDouble();
         double phi = qAcos(1 - 2 * rnd.generateDouble());
-        double x = qSin(phi) * qCos(theta);
-        double y = qSin(phi) * qSin(theta);
-        double z = qCos(phi);
+        float x = qSin(phi) * qCos(theta);
+        float y = qSin(phi) * qSin(theta);
+        float z = qCos(phi);
         points[i][0] = x;
         points[i][1] = y;
         points[i][2] = z;
         // qDebug() << "got point " << x << "," << y << "," << z;
     }
     particles_position_vbo.bind();
-    particles_position_vbo.write(0, points, NUM_PARTICLES*3*sizeof(GLfloat));
+    particles_position_vbo.write(0, points, NUM_PARTICLES * 3 * sizeof(GLfloat));
+    sendBillboardData();
+
     g.glVertexAttribDivisor(0,0); // same mesh
     g.glVertexAttribDivisor(1,1); // particle position 1 per quad
 
@@ -101,13 +103,6 @@ bool Particles::paintGL()
 
 void Particles::initBuffers()
 {
-    GLfloat billboard_data[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
-        0.5f,  0.5f, 0.0f,
-    };
-
     // billboard data
     billboard_vbo.bind();
     billboard_vbo.allocate(billboard_data, sizeof(billboard_data));
@@ -116,4 +111,21 @@ void Particles::initBuffers()
     particles_position_vbo.bind();
     particles_position_vbo.allocate(nullptr,
         static_cast<int>(MAX_PARTICLES * 3 * sizeof(GLfloat)));
+}
+
+void Particles::sendBillboardData()
+{
+    // remove orientation of view matrix
+    QMatrix4x4 Vinv = camera()->viewMatrix().inverted();
+
+    QVector3D billboard_data_rotated[4];
+    for (int i = 0; i < 4; ++i) {
+        QVector4D p = Vinv * QVector4D(billboard_data[i], 0.0f);
+        billboard_data_rotated[i] = p.toVector3D();
+    }
+
+    // send new data
+    billboard_vbo.bind();
+    billboard_vbo.write(0, billboard_data_rotated,
+                        sizeof(billboard_data_rotated));
 }
