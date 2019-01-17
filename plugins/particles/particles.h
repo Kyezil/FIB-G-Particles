@@ -3,9 +3,12 @@
 
 #include "plugin.h"
 #include <QOpenGLShader>
+#include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <QRandomGenerator>
 #include <QString>
+#include <QtMath>
 
 class Particles: public QObject, public Plugin
 {
@@ -22,8 +25,6 @@ public:
     Particles();
     ~Particles();
     void onPluginLoad();
-    void preFrame();
-    void postFrame();
 
     bool paintGL();
 private:
@@ -31,6 +32,7 @@ private:
     void cleanup();
 
     QOpenGLShaderProgram *program;
+    QOpenGLVertexArrayObject vao;
     QOpenGLBuffer billboard_vbo;
     QOpenGLBuffer particles_position_vbo;
 };
