@@ -29,6 +29,9 @@ public:
     // generate data
     void generateSphereData(unsigned int count);
 
+    // update positions
+    void update(double dt);
+
 private:
     unsigned int max_particles;
     unsigned int nb_particles_alive;

@@ -7,6 +7,9 @@ Particles::Particles()
     , particles_position_vbo(QOpenGLBuffer::VertexBuffer)
     , generator(MAX_PARTICLES)
 {
+    // create timer
+    timer = new QTimer(this);
+
     // load shaders
     program = new QOpenGLShaderProgram;
     if (!program->addShaderFromSourceFile(QOpenGLShader::Vertex, VSPath) ||
@@ -60,6 +63,9 @@ void Particles::cleanup()
 
 void Particles::onPluginLoad(){
     generator.generateSphereData(50);
+    connect(timer, SIGNAL(timeout()), glwidget(), SLOT(update()));
+    timer->start(0);
+
 }
 
 bool Particles::paintGL()
@@ -80,9 +86,12 @@ bool Particles::paintGL()
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
 
+    // update particles
+    generator.update(0.1);
     particles_position_vbo.bind();
     particles_position_vbo.write(0, generator.particlesPositions(),
                                  generator.size() * 3 * sizeof(GLfloat));
+    // update billboard
     sendBillboardData();
 
     g.glVertexAttribDivisor(0,0); // same mesh

@@ -12,6 +12,7 @@
 #include <QRandomGenerator>
 #include <QString>
 #include <QtMath>
+#include <QTimer>
 
 class Particles: public QObject, public Plugin
 {
@@ -30,7 +31,10 @@ public:
     void onPluginLoad();
 
     bool paintGL();
+
 private:
+    QTimer *timer;
+
     const QVector3D billboard_data[4] = {
         {-0.5f, -0.5f, 0.0f},
         {0.5f, -0.5f, 0.0f},
