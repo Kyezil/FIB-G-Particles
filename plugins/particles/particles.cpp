@@ -58,7 +58,9 @@ void Particles::cleanup()
     program = nullptr;
 }
 
-void Particles::onPluginLoad(){}
+void Particles::onPluginLoad(){
+    generator.generateSphereData(50);
+}
 
 bool Particles::paintGL()
 {
@@ -77,29 +79,16 @@ bool Particles::paintGL()
     program->setUniformValue("modelViewMatrix", camera()->viewMatrix());
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
-    const unsigned int NUM_PARTICLES = 20;
-    // fill buffer with random points on a unit sphere
-    QRandomGenerator rnd(1234);
-    GLfloat points[NUM_PARTICLES][3];
-    for (unsigned int i = 0; i < NUM_PARTICLES; ++i) {
-        double theta = 2 * M_PI * rnd.generateDouble();
-        double phi = qAcos(1 - 2 * rnd.generateDouble());
-        float x = static_cast<float>(qSin(phi) * qCos(theta));
-        float y = static_cast<float>(qSin(phi) * qSin(theta));
-        float z = static_cast<float>(qCos(phi));
-        points[i][0] = x;
-        points[i][1] = y;
-        points[i][2] = z;
-        // qDebug() << "got point " << x << "," << y << "," << z;
-    }
+
     particles_position_vbo.bind();
-    particles_position_vbo.write(0, points, NUM_PARTICLES * 3 * sizeof(GLfloat));
+    particles_position_vbo.write(0, generator.particlesPositions(),
+                                 generator.size() * 3 * sizeof(GLfloat));
     sendBillboardData();
 
     g.glVertexAttribDivisor(0,0); // same mesh
     g.glVertexAttribDivisor(1,1); // particle position 1 per quad
 
-    g.glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, NUM_PARTICLES);
+    g.glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, generator.size());
 
     program->release();
     return true;
