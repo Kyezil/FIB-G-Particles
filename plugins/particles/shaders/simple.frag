@@ -24,5 +24,6 @@ void main() {
     float intensity = decay(d)*distance_decay;
     gl_FragColor = vec4(intensity);
 
-    if (d > size/2-0.01) gl_FragColor.r = 1;
+    // view particle border:
+    // if (d > size/2-0.01) gl_FragColor.r = 1;
 }
