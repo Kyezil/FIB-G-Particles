@@ -63,26 +63,29 @@ bool Particles::paintGL()
 {
     GLWidget &g = *glwidget();
     g.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    g.glClearColor(0.3f,0.3f,0.3f,1.0f);
-    g.glEnable(GL_DEPTH_TEST);
+    g.glClearColor(0.0f,0.0f,0.0f,1.0f);
     g.glDisable(GL_CULL_FACE);
+    g.glDisable(GL_DEPTH_TEST);
+    // additive blending
+    g.glEnable(GL_BLEND);
+    g.glBlendFunc(GL_ONE, GL_ONE);
 
     program->bind();
     QMatrix4x4 MVP = camera()->projectionMatrix() * camera()->viewMatrix();
     program->setUniformValue("modelViewProjectionMatrix", MVP);
-
+    program->setUniformValue("modelViewMatrix", camera()->viewMatrix());
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
-    const unsigned int NUM_PARTICLES = 10;
-    // fill buffer with random points on a sphere
+    const unsigned int NUM_PARTICLES = 20;
+    // fill buffer with random points on a unit sphere
     QRandomGenerator rnd(1234);
     GLfloat points[NUM_PARTICLES][3];
-    for (int i = 0; i < NUM_PARTICLES; ++i) {
+    for (unsigned int i = 0; i < NUM_PARTICLES; ++i) {
         double theta = 2 * M_PI * rnd.generateDouble();
         double phi = qAcos(1 - 2 * rnd.generateDouble());
-        float x = qSin(phi) * qCos(theta);
-        float y = qSin(phi) * qSin(theta);
-        float z = qCos(phi);
+        float x = static_cast<float>(qSin(phi) * qCos(theta));
+        float y = static_cast<float>(qSin(phi) * qSin(theta));
+        float z = static_cast<float>(qCos(phi));
         points[i][0] = x;
         points[i][1] = y;
         points[i][2] = z;
