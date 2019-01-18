@@ -5,6 +5,7 @@ Particles::Particles()
     : program(nullptr)
     , billboard_vbo(QOpenGLBuffer::VertexBuffer)
     , particles_position_vbo(QOpenGLBuffer::VertexBuffer)
+    , generator(MAX_PARTICLES)
 {
     // load shaders
     program = new QOpenGLShaderProgram;

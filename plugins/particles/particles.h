@@ -2,6 +2,8 @@
 #define PARTICLES_H
 
 #include "plugin.h"
+#include "particlegenerator.h"
+
 #include <QOpenGLShader>
 #include <QVector3D>
 #include <QOpenGLVertexArrayObject>
@@ -18,7 +20,7 @@ class Particles: public QObject, public Plugin
     Q_INTERFACES(Plugin)
 
 public:
-    const unsigned int MAX_PARTICLES = 10000;
+    const static unsigned int MAX_PARTICLES = 10000;
 
     const QString VSPath = ":/shaders/simple.vert";
     const QString FSPath = ":/shaders/simple.frag";
@@ -44,6 +46,8 @@ private:
     QOpenGLVertexArrayObject vao;
     QOpenGLBuffer billboard_vbo;
     QOpenGLBuffer particles_position_vbo;
+
+    ParticleGenerator generator;
 };
 
 #endif
