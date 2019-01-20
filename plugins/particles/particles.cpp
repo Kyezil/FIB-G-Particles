@@ -42,6 +42,9 @@ Particles::Particles()
     particles_position_vbo.bind();
     program->setAttributeBuffer(1, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
 
+    // set default uniforms
+    program->setUniformValue("size", PARTICLE_SIZE);
+    program->setUniformValue("radius", SPHERE_RADIUS);
     program->release();
 }
 
@@ -62,7 +65,7 @@ void Particles::cleanup()
 }
 
 void Particles::onPluginLoad(){
-    generator.generateSphereData(10);
+    generator.generateSphereData(START_PARTICLES);
     connect(timer, SIGNAL(timeout()), glwidget(), SLOT(update()));
     timer->start(0);
 
@@ -87,10 +90,11 @@ bool Particles::paintGL()
     QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
 
     // update particles
-    generator.update(0.7);
+    generator.update(1.0);
     particles_position_vbo.bind();
     particles_position_vbo.write(0, generator.particlesPositions(),
                                  generator.size() * 3 * sizeof(GLfloat));
+
     // update billboard
     sendBillboardData();
 

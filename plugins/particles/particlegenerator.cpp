@@ -63,7 +63,8 @@ void ParticleGenerator::update(double dt)
     for (Particle &p : particles) {
         if (p.life > 0) {
             //qDebug() << "BEFORE" << p.pos << " WITH " << p.w;
-            p.pos = QQuaternion::fromAxisAndAngle(p.w, p.w.length()*dt)
+            float angle = p.w.length()*dt;
+            p.pos = QQuaternion::fromAxisAndAngle(p.w, angle)
                                .rotatedVector(p.pos);
             //qDebug() << "AFTER" << p.pos;
         }
