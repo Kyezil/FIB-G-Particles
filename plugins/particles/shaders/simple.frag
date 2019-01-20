@@ -2,7 +2,7 @@
 in vec3 center;
 in vec3 position;
 
-uniform float size = 0.7f;
+uniform float size = 1.0f;
 uniform float radius = 2.0f;
 
 uniform mat4 modelViewMatrix;

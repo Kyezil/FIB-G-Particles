@@ -1,6 +1,7 @@
 #ifndef PARTICLEGENERATOR_H
 #define PARTICLEGENERATOR_H
 #include <QVector3D>
+#include <QQuaternion>
 #include <vector>
 using std::vector;
 
@@ -9,6 +10,7 @@ class ParticleGenerator
 public:
     struct Particle {
         QVector3D pos;
+        QVector3D w; // rotation speed
         float life;
 
         Particle() {

@@ -6,7 +6,7 @@ uniform mat4 modelViewProjectionMatrix;
 out vec3 center;
 out vec3 position;
 
-uniform float size = 0.7f;
+uniform float size = 1.0f;
 uniform float radius = 2.0f;
 
 void main() {

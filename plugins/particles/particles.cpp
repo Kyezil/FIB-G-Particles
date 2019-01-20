@@ -62,7 +62,7 @@ void Particles::cleanup()
 }
 
 void Particles::onPluginLoad(){
-    generator.generateSphereData(50);
+    generator.generateSphereData(10);
     connect(timer, SIGNAL(timeout()), glwidget(), SLOT(update()));
     timer->start(0);
 
@@ -87,7 +87,7 @@ bool Particles::paintGL()
     QOpenGLVertexArrayObject::Binder vaoBinder(&vao);
 
     // update particles
-    generator.update(0.1);
+    generator.update(0.7);
     particles_position_vbo.bind();
     particles_position_vbo.write(0, generator.particlesPositions(),
                                  generator.size() * 3 * sizeof(GLfloat));

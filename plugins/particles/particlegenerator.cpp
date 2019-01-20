@@ -53,17 +53,19 @@ void ParticleGenerator::generateSphereData(unsigned int count)
         float z = static_cast<float>(cos(phi));
         particles[i].pos = QVector3D(x,y,z);
         particles[i].life = 1.0f;
+        particles[i].w = QVector3D(0,1,0);
     }
 }
 
 void ParticleGenerator::update(double dt)
 {
     // rotation along y axis centered at 0
-    QMatrix4x4 R;
-    R.rotate(dt*100, QVector3D(0,1,0));
     for (Particle &p : particles) {
         if (p.life > 0) {
-            p.pos = (R*QVector4D(p.pos, 1.0)).toVector3D();
+            //qDebug() << "BEFORE" << p.pos << " WITH " << p.w;
+            p.pos = QQuaternion::fromAxisAndAngle(p.w, p.w.length()*dt)
+                               .rotatedVector(p.pos);
+            //qDebug() << "AFTER" << p.pos;
         }
     }
 }
