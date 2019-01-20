@@ -13,6 +13,7 @@
 #include <QString>
 #include <QtMath>
 #include <QTimer>
+#include <QElapsedTimer>
 
 class Particles: public QObject, public Plugin
 {
@@ -37,6 +38,7 @@ public:
 
 private:
     QTimer *timer;
+    QElapsedTimer etimer;
 
     const QVector3D billboard_data[4] = {
         {-0.5f, -0.5f, 0.0f},

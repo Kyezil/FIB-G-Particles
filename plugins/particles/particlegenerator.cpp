@@ -53,7 +53,7 @@ void ParticleGenerator::generateSphereData(unsigned int count)
         float z = static_cast<float>(cos(phi));
         particles[i].pos = QVector3D(x,y,z);
         particles[i].life = 1.0f;
-        particles[i].w = QVector3D(0,1,0);
+        particles[i].w = QVector3D(0,100,0);
     }
 }
 
