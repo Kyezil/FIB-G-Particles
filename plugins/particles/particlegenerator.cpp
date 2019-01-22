@@ -61,6 +61,7 @@ void ParticleGenerator::generateSphereData(unsigned int count)
 void ParticleGenerator::update(double dt)
 {
     vector<Particle> new_particles;
+    QRandomGenerator rnd;
 
     for (Particle &p: particles) {
         if (p.life == 1.0f) {
@@ -72,6 +73,13 @@ void ParticleGenerator::update(double dt)
             new_particles.push_back(q);
 
             float angle = p.w.length()*dt;
+
+            QQuaternion q2 = QQuaternion::fromAxisAndAngle(
+                        QVector3D(rnd.generateDouble(),
+                                  rnd.generateDouble(),
+                                  rnd.generateDouble()),
+                        rnd.generateDouble());
+            p.w = q2.rotatedVector(p.w);
             p.pos = QQuaternion::fromAxisAndAngle(p.w, angle)
                                .rotatedVector(p.pos);
         } else {
