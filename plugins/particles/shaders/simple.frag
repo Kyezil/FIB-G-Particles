@@ -1,6 +1,7 @@
 #version 330
 in vec3 center;
 in vec3 position;
+in float life;
 
 uniform float size = 1.0f;
 uniform float radius = 2.0f;
@@ -22,7 +23,7 @@ void main() {
 
     float distance_decay = exp(-(1-closeness));
     float intensity = decay(d)*distance_decay;
-    gl_FragColor = vec4(intensity);
+    gl_FragColor = vec4(intensity)*life;
 
     // view particle border:
     // if (d > size/2-0.01) gl_FragColor.r = 1;

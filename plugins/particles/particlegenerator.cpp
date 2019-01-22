@@ -9,7 +9,7 @@ ParticleGenerator::ParticleGenerator(unsigned int max_size)
     , particles(max_size) // resize vector
     , particles_data_buffer(nullptr)
 {
-    particles_data_buffer = new float[3*max_size];
+    particles_data_buffer = new float[4*max_size]; // pos + life
 
 }
 
@@ -24,13 +24,14 @@ const float* ParticleGenerator::particlesPositions()
     nb_particles_alive = 0;
     float *data = particles_data_buffer;
     for (const Particle& p : particles) {
-        if (p.life > 0) {
+        if (p.life > LIFE_THRESHOLD) {
             if(++nb_particles_alive > max_particles) {
                 throw std::runtime_error("Exceeded max number of particles");
             }
             *data = p.pos.x(); ++data;
             *data = p.pos.y(); ++data;
             *data = p.pos.z(); ++data;
+            *data = p.life; ++data;
         }
     }
     return particles_data_buffer;
@@ -52,21 +53,39 @@ void ParticleGenerator::generateSphereData(unsigned int count)
         float y = static_cast<float>(sin(phi) * sin(theta));
         float z = static_cast<float>(cos(phi));
         particles[i].pos = QVector3D(x,y,z);
-        particles[i].life = 1.0f;
+        particles[i].life = 1.0f; // head
         particles[i].w = QVector3D(0,100,0);
     }
 }
 
 void ParticleGenerator::update(double dt)
 {
-    // rotation along y axis centered at 0
-    for (Particle &p : particles) {
-        if (p.life > 0) {
-            //qDebug() << "BEFORE" << p.pos << " WITH " << p.w;
+    vector<Particle> new_particles;
+
+    for (Particle &p: particles) {
+        if (p.life == 1.0f) {
+            // create new particle at current position
+            Particle q;
+            q.pos = p.pos;
+            q.life = LIFE_DECAY;
+            q.w = QVector3D(0,0,0);
+            new_particles.push_back(q);
+
             float angle = p.w.length()*dt;
             p.pos = QQuaternion::fromAxisAndAngle(p.w, angle)
                                .rotatedVector(p.pos);
-            //qDebug() << "AFTER" << p.pos;
+        } else {
+            p.life *= LIFE_DECAY;
+        }
+    }
+
+    int k = 0;
+    for (int i = 0; k < new_particles.size() and i < particles.size(); ++i) {
+        Particle &p = particles[i];
+        if (p.life <= LIFE_THRESHOLD) { // recycle old particles
+            p = new_particles[k];
+            ++k;
         }
     }
 }
+

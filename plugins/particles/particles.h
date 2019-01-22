@@ -23,9 +23,9 @@ class Particles: public QObject, public Plugin
 
 public:
     const static unsigned int MAX_PARTICLES = 10000;
-    const static unsigned int START_PARTICLES = 10;
-    constexpr const static float PARTICLE_SIZE = 1.0f;
-    constexpr const static float SPHERE_RADIUS = 2.0f;
+    const static unsigned int START_PARTICLES = 100;
+    constexpr const static float PARTICLE_SIZE = 0.3f;
+    constexpr const static float SPHERE_RADIUS = 3.0f;
 
     const QString VSPath = ":/shaders/simple.vert";
     const QString FSPath = ":/shaders/simple.frag";

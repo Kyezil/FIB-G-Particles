@@ -40,7 +40,7 @@ Particles::Particles()
 
     program->enableAttributeArray(1);
     particles_position_vbo.bind();
-    program->setAttributeBuffer(1, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
+    program->setAttributeBuffer(1, GL_FLOAT, 0, 4, 4*sizeof(GLfloat));
 
     // set default uniforms
     program->setUniformValue("size", PARTICLE_SIZE);
@@ -94,7 +94,7 @@ bool Particles::paintGL()
     generator.update(double(etimer.restart())/1000);
     particles_position_vbo.bind();
     particles_position_vbo.write(0, generator.particlesPositions(),
-                                 generator.size() * 3 * sizeof(GLfloat));
+                                 generator.size() * 4 * sizeof(GLfloat));
 
     // update billboard
     sendBillboardData();

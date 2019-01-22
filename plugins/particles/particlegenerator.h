@@ -8,6 +8,9 @@ using std::vector;
 class ParticleGenerator
 {
 public:
+    constexpr const static float LIFE_DECAY = 0.9f;
+    constexpr const static float LIFE_THRESHOLD = 0.1f;
+
     struct Particle {
         QVector3D pos;
         QVector3D w; // rotation speed
@@ -39,6 +42,7 @@ private:
     unsigned int nb_particles_alive;
     // container for the particles
     vector<Particle> particles;
+
     // tmp buffer for particles data
     float *particles_data_buffer;
 };
